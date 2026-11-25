@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import qrcode
+
 
 def get_input(prompt):
     """Repeat the supplied prompt until input is not empty or whitespace-only.
@@ -7,7 +9,12 @@ def get_input(prompt):
     Return a string with surrounding whitespace removed, preserving spaces
     and punctuation within the response.
     """
-    pass
+
+    response = input(prompt).strip()
+    while response == "":
+        print("Please enter a non-empty response.")
+        response = input(prompt).strip()
+    return response
 
 
 def png_filename(filename):
@@ -16,7 +23,11 @@ def png_filename(filename):
     Keep an existing .png extension in any letter case: lab becomes lab.png,
     but lab.PNG stays lab.PNG. Do not prompt for input.
     """
-    pass
+
+    filename = filename.strip()
+    if not filename.endswith((".png", ".PNG")):
+        filename += ".png"
+    return filename
 
 
 def save_qr(content, filename):
@@ -31,7 +42,8 @@ def save_qr(content, filename):
     output_path = output_folder / filename
 
     # TODO: Create the QR code and save it to output_path.
-    pass
+    img = qrcode.make(content)
+    img.save(output_path)
 
 
 def main() -> None:
@@ -41,7 +53,12 @@ def main() -> None:
     After saving, print "Saved " followed by the final filename.
     Return nothing (None).
     """
-    pass
+
+    encoded_content = get_input("Enter a URL or message to encode: ")
+    filename = get_input("Enter the output filename: ")
+    filename = png_filename(filename)
+    save_qr(encoded_content, filename)
+    print(f"Saved {filename}")
 
 
 if __name__ == "__main__":
